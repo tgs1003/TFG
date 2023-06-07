@@ -15,5 +15,9 @@ while True:
     client_socket.send("You are connected!\n".encode())
     client_socket.send(f"{data['data'][:,0]}\n".encode())
     time.sleep(2)
+    for i in range(len(data.data)):
+        client_socket.sendall(str(data.data[i]).encode())
+        time.sleep(0.1)
+        
     client_socket.send("You are being disconnected!\n".encode())
     client_socket.close()
