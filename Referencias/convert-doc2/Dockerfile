@@ -7,10 +7,15 @@ LABEL org.opencontainers.image.source https://github.com/alephdata/convert-docum
 
 RUN apk --no-cache add bash libreoffice util-linux libreoffice-writer psmisc curl \
     ttf-droid-nonlatin ttf-droid ttf-dejavu ttf-freefont ttf-liberation \
-    msttcorefonts-installer fontconfig \
-    && update-ms-fonts \
+    #msttcorefonts-installer fontconfig \
+    #&& update-ms-fonts \
     && fc-cache -f \
-    && rm -rf /var/cache/apk/* /tmp/* /var/tmp/* \
+    && rm -rf /var/cache/apk/* /tmp/* /var/tmp/* 
+ENV PYTHONUNBUFFERED=1
+RUN apk add --update --no-cache python3 && ln -sf python3 /usr/bin/python
+RUN python3 -m ensurepip
+RUN pip3 install --no-cache --upgrade pip setuptools
+
     #&& apt-get -q -y dist-upgrade \
     #&& apt-get -q -y install locales libreoffice libreoffice-writer psmisc curl \
     #libreoffice-impress libreoffice-common  \
@@ -21,14 +26,14 @@ RUN apk --no-cache add bash libreoffice util-linux libreoffice-writer psmisc cur
     #python3-pip python3-uno python3-lxml python3-icu unoconv \
     #&& apt-get -qq -y autoremove \
     #&& apk clean \
-    && localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8
+    #&& localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8
 
-ENV LANG='en_US.UTF-8'
+#ENV LANG='en_US.UTF-8'
 
-RUN groupadd -g 1000 -r app \
-    && useradd -m -u 1000 -d /tmp -s /bin/false -g app app
+#RUN groupadd -g 1000 -r app \
+#    && useradd -m -u 1000 -d /tmp -s /bin/false -g app app
 
-RUN mkdir -p /convert
+RUN mkdir /convert
 WORKDIR /convert
 COPY requirements.txt /convert
 RUN pip3 install --no-cache-dir -q -r /convert/requirements.txt
